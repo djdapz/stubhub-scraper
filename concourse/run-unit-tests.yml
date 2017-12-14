@@ -16,4 +16,4 @@ run:
     ls -lsa
     cd stubhub-scraper
     ls -lsa
-#    ./gradlew clean test
+    ./gradlew clean test
