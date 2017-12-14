@@ -1,29 +1,51 @@
-version '1.0-SNAPSHOT'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE")
+    }
+}
 
 apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
 
-sourceCompatibility = 1.8
+jar {
+    baseName = 'stubhub-scraper'
+    version = '1.0.0-SNAPSHOT'
+}
 
 repositories {
     mavenCentral()
 }
 
-
-buildscript{
-    ext{
-        springBootVersion = '1.5.7'
-    }
-}
-
-apply plugin: "java"
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 dependencies {
     compile(
-            "org.springframework.boot:spring-boot-starter:$springBootVersion"
+            "org.springframework.boot:spring-boot-starter-web",
+            'org.springframework.boot:spring-boot-starter-data-jpa',
+            'org.springframework.boot:spring-boot-configuration-processor',
+            "org.springframework:spring-web",
+            'org.springframework:spring-jdbc',
+            "org.projectlombok:lombok:1.16.18",
+            "org.flywaydb:flyway-core:4.1.0",
+            'org.postgresql:postgresql:9.4.1212.jre7',
+            "com.fasterxml.jackson.core:jackson-databind",
+            "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.2",
+    )
+
+    runtime(
+            "com.h2database:h2"
     )
 
     testCompile(
             'org.assertj:assertj-core:3.8.0',
-            'junit:junit:4.12'
+            "org.mockito:mockito-core:2.+",
+            "io.rest-assured:rest-assured:3.0.5",
+            "junit:junit",
+            "org.springframework.boot:spring-boot-starter-test"
     )
 }
