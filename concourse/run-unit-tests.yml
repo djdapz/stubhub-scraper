@@ -1,0 +1,19 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: openjdk, tag: 8-jdk-alpine}
+
+inputs:
+- name: stubhub-scraper
+
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    ls -lsa
+    cd stubhub-scraper
+    ls -lsa
+#    ./gradlew clean test

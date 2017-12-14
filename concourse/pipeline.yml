@@ -1,0 +1,15 @@
+---
+resources:
+- name: stubhub-scraper
+  type: git
+  source:
+    uri: https://github.com/djdapz/stubhub-scraper.git
+
+jobs:
+- name: run-unit-tests
+  public: true
+  plan:
+  - get: stubhub-scraper
+    trigger: true
+  - task: unit-tests
+    file: stubhub-scraper/concourse/run-unit-tests.yml
