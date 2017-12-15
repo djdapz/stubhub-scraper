@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +27,7 @@ public class ListingService {
     TimeService timeService;
 
     public List<ProcessedListing> getListingFor(final Integer eventId) {
-        final OffsetDateTime now = timeService.now();
+        final LocalDateTime now = timeService.now();
         ListingResponse listingResponse = getJsonObject(restTemplate, getUrl(eventId), ListingResponse.class);
         return listingResponse
                 .getListing()

@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Value;
 import lombok.experimental.FieldDefaults;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -16,7 +16,7 @@ import static lombok.AccessLevel.PRIVATE;
 public class ProcessedListing {
     Integer eventId;
     Integer listingId;
-    OffsetDateTime asOfDate;
+    LocalDateTime asOfDate;
     Price currentPrice;
     Price listingPrice;
     Integer sectionId;
@@ -34,7 +34,7 @@ public class ProcessedListing {
     Integer score;
 
 
-    public ProcessedListing(Listing listing, OffsetDateTime time, Integer eventId) {
+    public ProcessedListing(Listing listing, LocalDateTime time, Integer eventId) {
         this.eventId = eventId;
         this.listingId = listing.getListingId();
         this.currentPrice = listing.getCurrentPrice();

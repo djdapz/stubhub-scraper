@@ -8,7 +8,7 @@ import lombok.SneakyThrows;
 
 import java.math.BigDecimal;
 import java.net.URL;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -87,7 +87,7 @@ public class Random {
         return new ProcessedListing(
                 randomInt(),
                 randomInt(),
-                randomOffsetDateTime(),
+                randomLocalDateTime(),
                 randomPrice(),
                 randomPrice(),
                 randomInt(),
@@ -106,8 +106,8 @@ public class Random {
         );
     }
 
-    public static OffsetDateTime randomOffsetDateTime() {
-        return OffsetDateTime
+    public static LocalDateTime randomLocalDateTime() {
+        return LocalDateTime
                 .now()
                 .minusYears(randomInt(50))
                 .minusDays(randomInt(365))

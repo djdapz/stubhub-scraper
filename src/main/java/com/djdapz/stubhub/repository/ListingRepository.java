@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -21,7 +22,7 @@ public class ListingRepository {
                 insertSql(),
                 listing.getListingId(),
                 listing.getEventId(),
-                Timestamp.from(listing.getAsOfDate().toInstant()),
+                Timestamp.from(listing.getAsOfDate().toInstant(OffsetDateTime.now().getOffset())),
                 listing.getCurrentPrice().getAmount(),
                 listing.getCurrentPrice().getCurrency(),
                 listing.getListingPrice().getAmount(),

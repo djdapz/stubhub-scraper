@@ -5,6 +5,9 @@ import lombok.experimental.FieldDefaults;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.sql.Timestamp;
+import java.time.OffsetDateTime;
+
 import static com.djdapz.stubhub.util.Random.randomProcessedListing;
 import static lombok.AccessLevel.PRIVATE;
 import static org.mockito.Mockito.mock;
@@ -25,7 +28,8 @@ public class ListingRepositoryTest {
         verify(jdbcTemplate).update(
                 insertSql(),
                 listing.getListingId(),
-                listing.getAsOfDate(),
+                listing.getEventId(),
+                Timestamp.from(listing.getAsOfDate().toInstant(OffsetDateTime.now().getOffset())),
                 listing.getCurrentPrice().getAmount(),
                 listing.getCurrentPrice().getCurrency(),
                 listing.getListingPrice().getAmount(),
@@ -46,26 +50,27 @@ public class ListingRepositoryTest {
     }
 
     private String insertSql() {
-        return "INSERT INTO city(" +
-                "  listing_id             " +
-                "  as_of_date             " +
-                "  current_price_amount  " +
-                "  current_price_currency " +
-                "  listing_price_amount   " +
-                "  listing_price_currency " +
-                "  sectionId              " +
-                "  quantity               " +
-                "  zoneId                 " +
-                "  isGA                   " +
-                "  score                  " +
-                "  row                    " +
-                "  sellerSectionName      " +
-                "  sectionName            " +
-                "  seatNumbers            " +
-                "  zoneName               " +
-                "  splitOption            " +
-                "  ticketSplit            " +
-                "  dirtyTicketInd         " +
-                ") VALUES(? ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        return "INSERT INTO listing(" +
+                " listing_id " +
+                ", event_id " +
+                ", as_of_date " +
+                ", current_price_amount " +
+                ", current_price_currency " +
+                ", listing_price_amount " +
+                ", listing_price_currency " +
+                ", sectionId " +
+                ", quantity " +
+                ", zoneId " +
+                ", isGA " +
+                ", score " +
+                ", row " +
+                ", sellerSectionName " +
+                ", sectionName " +
+                ", seatNumbers " +
+                ", zoneName " +
+                ", splitOption " +
+                ", ticketSplit " +
+                ", dirtyTicketInd " +
+                ") VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     }
 }

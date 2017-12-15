@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -13,7 +13,7 @@ import static lombok.AccessLevel.PRIVATE;
 public class ListingEntity {
     Integer eventId;
     Integer listingId;
-    OffsetDateTime asOfDate;
+    LocalDateTime asOfDate;
     BigDecimal currentPriceAmount;
     String currentPriceCurrency;
     BigDecimal listingPriceAmount;

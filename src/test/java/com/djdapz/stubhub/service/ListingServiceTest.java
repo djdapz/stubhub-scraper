@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URL;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.djdapz.stubhub.util.Random.*;
@@ -34,7 +34,7 @@ public class ListingServiceTest {
 
     Integer eventId = randomInt();
     URL stubhubUrl = randomUrl();
-    OffsetDateTime asOfDate = randomOffsetDateTime();
+    LocalDateTime asOfDate = randomLocalDateTime();
     Listing firstListing = randomListing();
     Listing secondListing = randomListing();
 
