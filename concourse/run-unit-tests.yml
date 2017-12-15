@@ -5,8 +5,8 @@ image_resource:
   type: docker-image
   source: {repository: openjdk, tag: 8-jdk-alpine}
 
-caches:
-- path: stubhub-scraper/.gradle
+#caches:
+#- path: stubhub-scraper/.gradle
 
 
 inputs:
@@ -21,3 +21,8 @@ run:
     cd stubhub-scraper
     ls -lsa
     ./gradlew clean test
+    ls -lsa
+    cd ..
+    ls -lsa
+    cd ..
+    ls -lsa
