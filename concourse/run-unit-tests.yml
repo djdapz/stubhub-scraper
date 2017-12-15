@@ -6,7 +6,8 @@ image_resource:
   source: {repository: openjdk, tag: 8-jdk-alpine}
 
 caches:
-- path: project-src/.gradle
+- path: stubhub-scraper/.gradle
+
 
 inputs:
 - name: stubhub-scraper
