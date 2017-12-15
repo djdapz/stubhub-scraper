@@ -5,8 +5,8 @@ image_resource:
   type: docker-image
   source: {repository: openjdk, tag: 8-jdk-alpine}
 
-#caches:
-#- path: project-src/.gradle
+caches:
+- path: project-src/.gradle
 
 inputs:
 - name: stubhub-scraper
