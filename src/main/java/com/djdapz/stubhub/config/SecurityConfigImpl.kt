@@ -33,13 +33,14 @@ class SecurityConfigImpl(@param:Value("\${stubhub.api.token}") private val token
         restTemplate.interceptors = interceptors
         return restTemplate
     }
-}
 
-class StubhubRequestInterceptor(private val token: String) : ClientHttpRequestInterceptor{
-    override fun intercept(request: HttpRequest, body: ByteArray, execution: ClientHttpRequestExecution): ClientHttpResponse {
-        request.headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-        return execution.execute(request, body)
+    class StubhubRequestInterceptor(private val token: String) : ClientHttpRequestInterceptor {
+        override fun intercept(request: HttpRequest, body: ByteArray, execution: ClientHttpRequestExecution): ClientHttpResponse {
+            request.headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+            return execution.execute(request, body)
+        }
     }
 }
+
 
 

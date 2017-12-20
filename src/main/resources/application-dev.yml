@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://baasu.db.elephantsql.com:5432/pliqbuwe?currentSchema=localf
+    password: CjQsgs2hfYuAgRRCmsvfn8a494rWp57G
+    username: devondapuzzo
+
+flyway:
+  schemas: dev
+  clean-on-validation-error: false

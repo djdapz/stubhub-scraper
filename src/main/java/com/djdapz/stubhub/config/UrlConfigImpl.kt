@@ -5,9 +5,9 @@ import org.springframework.context.annotation.Configuration
 import java.net.URL
 
 @Configuration
-open class UrlConfigImpl(
+class UrlConfigImpl(
         @Value("\${stubhub.url}") private val baseUrl: String,
-        @Value("\${stubhub.path.stubhubListing}") private val listingsPath: String
+        @Value("\${stubhub.path.listing}") private val listingsPath: String
 ) : UrlConfig {
     override val stubhubListingUrl: URL
         get() = URL(baseUrl + listingsPath)

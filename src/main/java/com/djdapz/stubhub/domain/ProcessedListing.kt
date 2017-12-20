@@ -15,7 +15,7 @@ data class ProcessedListing(
         val quantity: Int,
         val row: String,
         val score: Int,
-        val seatNumbers: String,
+        val seatNumbers: String?,
         val sectionId: Int,
         val sectionName: String,
         val sellerSectionName: String,

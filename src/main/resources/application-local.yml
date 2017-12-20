@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/stubhub?currentSchema=local
+    password:
+    username: devondapuzzo
+
+flyway:
+  schemas: local
+  clean-on-validation-error: true

@@ -1,7 +1,7 @@
 CREATE TABLE stubhubListing (
   listing_id             INTEGER          NOT NULL,
   event_id               INTEGER          NOT NULL,
-  as_of_date             TIME             NOT NULL,
+  as_of_date             TIMESTAMP             NOT NULL,
   current_price_amount   DOUBLE PRECISION NOT NULL,
   current_price_currency VARCHAR(64)      NOT NULL,
   listing_price_amount   DOUBLE PRECISION NOT NULL,

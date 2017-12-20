@@ -1,18 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/stubhub?currentSchema=local
-    password:
-    username: devondapuzzo
     driver-class-name: org.postgresql.Driver
-  jpa:
-    properties:
-      hibernate:
-        default_schema: local
 
 flyway:
-  schemas: local
   locations: classpath:db/migration,classpath:db/fixtures
-  clean-on-validation-error: true
 
 stubhub:
   url: https://api.stubhub.com

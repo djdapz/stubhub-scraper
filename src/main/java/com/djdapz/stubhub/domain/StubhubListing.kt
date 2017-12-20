@@ -9,7 +9,7 @@ data class StubhubListing(
         val quantity: Int,
         val sellerSectionName: String,
         val sectionName: String,
-        val seatNumbers: String,
+        val seatNumbers: String?,
         val zoneId: Int,
         val zoneName: String,
         val isGA: Int,
