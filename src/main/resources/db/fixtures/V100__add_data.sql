@@ -1,4 +1,4 @@
--- INSERT INTO listing
+-- INSERT INTO stubhubListing
 -- VALUES (
 --   1,
 --   '2017-10-10',

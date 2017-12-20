@@ -1,4 +1,4 @@
-CREATE TABLE listing (
+CREATE TABLE stubhubListing (
   listing_id             INTEGER          NOT NULL,
   event_id               INTEGER          NOT NULL,
   as_of_date             TIME             NOT NULL,

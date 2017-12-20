@@ -21,16 +21,3 @@ run:
     cd stubhub-scraper
     ls -lsa
     ./gradlew clean test
-    ls -lsa
-    cd ..
-    ls -lsa
-    cd ..
-    ls -lsa
-    cd ..
-    ls -lsa
-    cd ..
-    ls -lsa
-    cd ..
-    ls -lsa
-    cd ..
-    ls -lsa
