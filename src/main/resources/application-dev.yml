@@ -1,9 +1,18 @@
 spring:
   datasource:
-    url: jdbc:postgresql://baasu.db.elephantsql.com:5432/pliqbuwe?currentSchema=localf
+    url: jdbc:postgresql://baasu.db.elephantsql.com:5432/pliqbuwe
     password: CjQsgs2hfYuAgRRCmsvfn8a494rWp57G
-    username: devondapuzzo
+    username: pliqbuwe
+  jpa:
+    properties:
+      hibernate:
+        default_schema: dev
+
+djdapz:
+  stubhub:
+    schema: dev
 
 flyway:
-  schemas: dev
+  schemas: ${djdapz.stubhub.schema}
   clean-on-validation-error: false
+  baseline-on-migrate: true

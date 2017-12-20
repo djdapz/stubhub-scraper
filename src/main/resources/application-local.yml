@@ -1,9 +1,16 @@
+server:
+  port: 9000
+
+djdapz:
+  stubhub:
+    schema: local
+
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/stubhub?currentSchema=local
+    url: jdbc:postgresql://localhost:5432/stubhub
     password:
     username: devondapuzzo
 
 flyway:
-  schemas: local
+  schemas: ${djdapz.stubhub.schema}
   clean-on-validation-error: true

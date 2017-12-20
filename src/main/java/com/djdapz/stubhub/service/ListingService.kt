@@ -1,8 +1,8 @@
 package com.djdapz.stubhub.service
 
 import com.djdapz.stubhub.config.UrlConfig
-import com.djdapz.stubhub.domain.StubhubListingResponse
 import com.djdapz.stubhub.domain.ProcessedListing
+import com.djdapz.stubhub.domain.StubhubListingResponse
 import com.djdapz.stubhub.repository.ListingRepository
 import com.djdapz.stubhub.util.RestUtil.getJsonObject
 import org.springframework.stereotype.Service
@@ -19,6 +19,7 @@ class ListingService(
 
     fun getListingFor(eventId: Int?): List<ProcessedListing> {
         val now = timeService.now()
+        println("Getting info for event: ${eventId}")
         val listingResponse = getJsonObject(restTemplate, getUrl(eventId), StubhubListingResponse::class.java)
         return listingResponse
                 .stubhubListing

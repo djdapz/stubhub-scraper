@@ -1,5 +1,6 @@
 package com.djdapz.stubhub.repository
 
+import com.djdapz.stubhub.config.SqlConfig
 import com.djdapz.stubhub.domain.ProcessedListing
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
@@ -7,7 +8,7 @@ import java.sql.Timestamp
 import java.time.OffsetDateTime
 
 @Repository
-open class ListingRepository(val jdbcTemplate: JdbcTemplate) {
+class ListingRepository(val jdbcTemplate: JdbcTemplate, val sqlConfig: SqlConfig) {
 
     fun saveListing(listing: ProcessedListing) {
         jdbcTemplate.update(
@@ -35,7 +36,7 @@ open class ListingRepository(val jdbcTemplate: JdbcTemplate) {
     }
 
     private fun insertSql(): String {
-        return "INSERT INTO stubhubListing(" +
+        return "INSERT INTO ${sqlConfig.schema}.stubhubListing(" +
                 " listing_id " +
                 ", event_id " +
                 ", as_of_date " +
