@@ -10,13 +10,10 @@ import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
 import org.junit.Test
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import java.util.*
-import java.util.Arrays.*
+import java.util.Arrays.asList
 
 class ListingControllerTest {
     private val eventId: Int = randomInt()
@@ -27,17 +24,6 @@ class ListingControllerTest {
     }
     private val subject = ListingController(listingService)
     private val mockMvc = MockMvcBuilders.standaloneSetup(subject).build()
-
-
-    @Test
-    @Throws(Exception::class)
-    fun shouldReturn200() {
-        mockMvc.perform(
-                get("/listings")
-                        .param("eventId", eventId.toString())
-        ).andExpect(status().isOk)
-    }
-
 
     @Test
     @Throws(Exception::class)

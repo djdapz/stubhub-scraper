@@ -1,5 +1,6 @@
 package com.djdapz.stubhub.util
 
+import com.djdapz.stubhub.domain.AnalyzedSample
 import com.djdapz.stubhub.domain.Price
 import com.djdapz.stubhub.domain.ProcessedListing
 import com.djdapz.stubhub.domain.StubhubListing
@@ -54,6 +55,15 @@ fun randomProcessedListing() =
                 randomLocalDateTime(),
                 randomInt())
 
+fun randomAnalyzedSample() =
+        AnalyzedSample(
+                asOfDate = randomLocalDateTime(),
+                count = randomInt(),
+                average = randomBigDecimal(),
+                minimum = randomBigDecimal(),
+                maximum = randomBigDecimal(),
+                standardDeviation = randomBigDecimal())
+
 
 fun randomLocalDateTime(): LocalDateTime =
         LocalDateTime
@@ -66,7 +76,7 @@ fun randomLocalDateTime(): LocalDateTime =
 
 fun randomBoolean(): Boolean = randomInt() % 2 == 1
 
-fun <T> randomList(producer: () -> T): List<T> = (1..randomInt(5)).map { producer() }
+fun <T> randomList(producer: () -> T): List<T> = (1..5).map { producer() }
 
 private fun randomPrice(): Price = Price(randomBigDecimal(), randomString())
 

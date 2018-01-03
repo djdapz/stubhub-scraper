@@ -1,18 +1,29 @@
 package com.djdapz.stubhub.repository
 
+import com.djdapz.stubhub.config.SqlConfig
+import com.djdapz.stubhub.util.randomInt
 import com.djdapz.stubhub.util.randomProcessedListing
+import com.djdapz.stubhub.util.randomString
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
 import org.junit.Test
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
 import org.springframework.jdbc.core.JdbcTemplate
 import java.sql.Timestamp
 import java.time.OffsetDateTime
 
 class StubhubListingRepositoryTest {
 
-    private val jdbcTemplate = mock(JdbcTemplate::class.java)
-    private val subject = ListingRepository(jdbcTemplate)
+    private val schema = randomString()
+
+    private val jdbcTemplate = mock<JdbcTemplate> {}
+    private val sqlConfig = mock<SqlConfig> {
+        on { schema } doReturn schema
+    }
+    private val subject = ListingRepository(jdbcTemplate, sqlConfig)
+
     private val listing = randomProcessedListing()
+    private val eventId = randomInt()
 
     @Test
     fun shouldCallJdbcTemplateUpdateWhenSaving() {
@@ -42,8 +53,16 @@ class StubhubListingRepositoryTest {
                 listing.dirtyTicketInd)
     }
 
+
+    @Test
+    fun shouldCallJdbcTemplateGetWhenQueryingAgainstAnalysis() {
+        subject.getSamples(eventId)
+        verify(jdbcTemplate).queryForList(analysisSql, eventId)
+    }
+
+
     private fun insertSql(): String {
-        return "INSERT INTO stubhubListing(" +
+        return "INSERT INTO ${schema}.stubhubListing(" +
                 " listing_id " +
                 ", event_id " +
                 ", as_of_date " +
@@ -66,4 +85,16 @@ class StubhubListingRepositoryTest {
                 ", dirtyTicketInd " +
                 ") VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
     }
+
+    private val analysisSql = "SELECT as_of_date, " +
+            "   COUNT(*), " +
+            "   AVG(current_price_amount), " +
+            "   MIN(current_price_amount), " +
+            "   MAX(current_price_amount), " +
+            "   STDDEV(current_price_amount), " +
+            "   MEDIAN(current_price_amount)" +
+            "FROM ${sqlConfig.schema}.stubhublisting " +
+//            "WHERE sectionname like '%Lower%' or sectionname like '%Floor%'" +
+            "GROUP by as_of_date" +
+            "WHERE eventId = ?;"
 }
