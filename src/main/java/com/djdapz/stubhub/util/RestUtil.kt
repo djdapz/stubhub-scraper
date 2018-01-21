@@ -8,7 +8,6 @@ import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestTemplate
 
 object RestUtil {
-
     fun <T> getJsonObject(
             restTemplate: RestTemplate,
             url: String,

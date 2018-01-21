@@ -10,7 +10,7 @@ import java.sql.Timestamp
 import java.time.OffsetDateTime
 
 @Repository
-class ListingRepository(val jdbcTemplate: JdbcTemplate, val sqlConfig: SqlConfig) {
+class ListingRepository(private val jdbcTemplate: JdbcTemplate, private val sqlConfig: SqlConfig) {
 
     fun saveListing(listing: ProcessedListing) {
         jdbcTemplate.update(
@@ -70,27 +70,26 @@ class ListingRepository(val jdbcTemplate: JdbcTemplate, val sqlConfig: SqlConfig
             }
 
 
-    @Suppress("LeakingThis")
-    val insertSql = "INSERT INTO ${sqlConfig.schema}.stubhubListing(" +
-                " listing_id " +
-                ", event_id " +
-                ", as_of_date " +
-                ", current_price_amount " +
-                ", current_price_currency " +
-                ", listing_price_amount " +
-                ", listing_price_currency " +
-                ", sectionId " +
-                ", quantity " +
-                ", zoneId " +
-                ", isGA " +
-                ", score " +
-                ", row " +
-                ", sellerSectionName " +
-                ", sectionName " +
-                ", seatNumbers " +
-                ", zoneName " +
-                ", splitOption " +
-                ", ticketSplit " +
-                ", dirtyTicketInd " +
-                ") VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+    val insertSql = """INSERT INTO ${sqlConfig.schema}.stubhubListing(
+                 listing_id
+                , event_id
+                , as_of_date
+                , current_price_amount
+                , current_price_currency
+                , listing_price_amount
+                , listing_price_currency
+                , sectionId
+                , quantity
+                , zoneId
+                , isGA
+                , score
+                , row
+                , sellerSectionName
+                , sectionName
+                , seatNumbers
+                , zoneName
+                , splitOption
+                , ticketSplit
+                , dirtyTicketInd
+                ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
 }

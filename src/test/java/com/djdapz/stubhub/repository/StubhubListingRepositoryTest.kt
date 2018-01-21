@@ -57,44 +57,45 @@ class StubhubListingRepositoryTest {
     @Test
     fun shouldCallJdbcTemplateGetWhenQueryingAgainstAnalysis() {
         subject.getSamples(eventId)
-        verify(jdbcTemplate).queryForList(analysisSql, eventId)
+        verify(jdbcTemplate).queryForList(analysisSql)
     }
 
 
     private fun insertSql(): String {
-        return "INSERT INTO ${schema}.stubhubListing(" +
-                " listing_id " +
-                ", event_id " +
-                ", as_of_date " +
-                ", current_price_amount " +
-                ", current_price_currency " +
-                ", listing_price_amount " +
-                ", listing_price_currency " +
-                ", sectionId " +
-                ", quantity " +
-                ", zoneId " +
-                ", isGA " +
-                ", score " +
-                ", row " +
-                ", sellerSectionName " +
-                ", sectionName " +
-                ", seatNumbers " +
-                ", zoneName " +
-                ", splitOption " +
-                ", ticketSplit " +
-                ", dirtyTicketInd " +
-                ") VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+        return """INSERT INTO ${schema}.stubhubListing(
+                 listing_id
+                , event_id
+                , as_of_date
+                , current_price_amount
+                , current_price_currency
+                , listing_price_amount
+                , listing_price_currency
+                , sectionId
+                , quantity
+                , zoneId
+                , isGA
+                , score
+                , row
+                , sellerSectionName
+                , sectionName
+                , seatNumbers
+                , zoneName
+                , splitOption
+                , ticketSplit
+                , dirtyTicketInd
+                ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
     }
 
-    private val analysisSql = "SELECT as_of_date, " +
-            "   COUNT(*), " +
-            "   AVG(current_price_amount), " +
-            "   MIN(current_price_amount), " +
-            "   MAX(current_price_amount), " +
-            "   STDDEV(current_price_amount), " +
-            "   MEDIAN(current_price_amount)" +
-            "FROM ${sqlConfig.schema}.stubhublisting " +
-//            "WHERE sectionname like '%Lower%' or sectionname like '%Floor%'" +
-            "GROUP by as_of_date" +
-            "WHERE eventId = ?;"
+    private val analysisSql = """
+                        SELECT as_of_date,
+                            COUNT(*),
+                            AVG(current_price_amount),
+                            MIN(current_price_amount),
+                            MAX(current_price_amount),
+                            STDDEV(current_price_amount)
+                        FROM ${sqlConfig.schema}.stubhubListing
+                        WHERE sectionname like '%Lower%' or sectionname like '%Floor'
+                        AND event_id = $eventId
+                        GROUP by as_of_date;
+                    """
 }
