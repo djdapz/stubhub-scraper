@@ -1,36 +1,49 @@
 package com.djdapz.stubhub.repository
 
 import com.djdapz.stubhub.config.SqlConfig
+import com.djdapz.stubhub.repository.mapper.AnalyzedSampleRowMapper
+import com.djdapz.stubhub.util.randomAnalyzedSample
 import com.djdapz.stubhub.util.randomInt
 import com.djdapz.stubhub.util.randomProcessedListing
 import com.djdapz.stubhub.util.randomString
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import org.mockito.Matchers.anyString
 import org.springframework.jdbc.core.JdbcTemplate
 import java.sql.Timestamp
 import java.time.OffsetDateTime
+import java.util.Arrays.asList
 
 class StubhubListingRepositoryTest {
 
-    private val schema = randomString()
-
-    private val jdbcTemplate = mock<JdbcTemplate> {}
-    private val sqlConfig = mock<SqlConfig> {
-        on { schema } doReturn schema
-    }
-    private val subject = ListingRepository(jdbcTemplate, sqlConfig)
+    private val firstSample = randomAnalyzedSample()
+    private val secondSample = randomAnalyzedSample()
+    private val samples = asList(firstSample, secondSample)
 
     private val listing = randomProcessedListing()
     private val eventId = randomInt()
 
+    private val schema = randomString()
+
+    private val analyzedSampleRowMapper = mock<AnalyzedSampleRowMapper> {}
+
+    private val jdbcTemplate = mock<JdbcTemplate> {
+        on { query(anyString(), eq(analyzedSampleRowMapper), any()) } doReturn samples
+    }
+
+    private val sqlConfig = mock<SqlConfig> {
+        on { schema } doReturn schema
+    }
+
+
+    private val subject = ListingRepository(jdbcTemplate, sqlConfig, analyzedSampleRowMapper)
+
     @Test
     fun shouldCallJdbcTemplateUpdateWhenSaving() {
-
         subject.saveListing(listing)
         verify(jdbcTemplate).update(
-                insertSql(),
+                insertSql,
                 listing.listingId,
                 listing.eventId,
                 Timestamp.from(listing.asOfDate.toInstant(OffsetDateTime.now().offset)),
@@ -53,16 +66,22 @@ class StubhubListingRepositoryTest {
                 listing.dirtyTicketInd)
     }
 
-
     @Test
     fun shouldCallJdbcTemplateGetWhenQueryingAgainstAnalysis() {
         subject.getSamples(eventId)
-        verify(jdbcTemplate).queryForList(analysisSql)
+        verify(jdbcTemplate).query(analysisSql, analyzedSampleRowMapper, eventId)
     }
 
 
-    private fun insertSql(): String {
-        return """INSERT INTO ${schema}.stubhubListing(
+    @Test
+    internal fun `should return list of analyzed samples for analysis`() {
+        val samples = subject.getSamples(eventId)
+        assertThat(samples).containsExactly(firstSample, secondSample)
+    }
+
+
+    private val insertSql =
+            """INSERT INTO ${schema}.stubhubListing(
                  listing_id
                 , event_id
                 , as_of_date
@@ -84,10 +103,8 @@ class StubhubListingRepositoryTest {
                 , ticketSplit
                 , dirtyTicketInd
                 ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
-    }
 
-    private val analysisSql = """
-                        SELECT as_of_date,
+    val analysisSql = """SELECT as_of_date,
                             COUNT(*),
                             AVG(current_price_amount),
                             MIN(current_price_amount),
@@ -95,7 +112,7 @@ class StubhubListingRepositoryTest {
                             STDDEV(current_price_amount)
                         FROM ${sqlConfig.schema}.stubhubListing
                         WHERE sectionname like '%Lower%' or sectionname like '%Floor'
-                        AND event_id = $eventId
+                        AND event_id = ?
                         GROUP by as_of_date;
                     """
 }

@@ -7,6 +7,7 @@ import com.djdapz.stubhub.domain.StubhubListing
 import java.lang.Math.abs
 import java.math.BigDecimal
 import java.net.URL
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 val CHARACTERS = "abcdefghijklmnopqrstuvwxyl1234567890-------"
@@ -73,6 +74,13 @@ fun randomLocalDateTime(): LocalDateTime =
                 .minusMinutes(randomInt(60).toLong())
                 .minusSeconds(randomInt(60).toLong())
                 .minusNanos(randomInt(1000).toLong())
+
+fun randomLocalDate(): LocalDate =
+        LocalDate
+                .now()
+                .minusYears(randomInt(50).toLong())
+                .minusDays(randomInt(365).toLong())
+
 
 fun randomBoolean(): Boolean = randomInt() % 2 == 1
 

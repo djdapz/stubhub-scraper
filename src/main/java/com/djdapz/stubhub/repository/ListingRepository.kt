@@ -3,16 +3,16 @@ package com.djdapz.stubhub.repository
 import com.djdapz.stubhub.config.SqlConfig
 import com.djdapz.stubhub.domain.AnalyzedSample
 import com.djdapz.stubhub.domain.ProcessedListing
+import com.djdapz.stubhub.repository.mapper.AnalyzedSampleRowMapper
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
-import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.OffsetDateTime
 
 @Repository
-class ListingRepository(private val jdbcTemplate: JdbcTemplate, private val sqlConfig: SqlConfig) {
+class ListingRepository(private val jdbcTemplate: JdbcTemplate, sqlConfig: SqlConfig, private val analyzedSampleRowMapper: AnalyzedSampleRowMapper) {
 
-    fun saveListing(listing: ProcessedListing) {
+    fun saveListing(listing: ProcessedListing) =
         jdbcTemplate.update(
                 insertSql,
                 listing.listingId,
@@ -35,12 +35,11 @@ class ListingRepository(private val jdbcTemplate: JdbcTemplate, private val sqlC
                 listing.splitOption,
                 listing.ticketSplit,
                 listing.dirtyTicketInd)
-    }
 
-    @SuppressWarnings
-    fun getSamples(eventId: Int): List<AnalyzedSample> =
-            jdbcTemplate.queryForList("""
-                        SELECT as_of_date,
+
+    fun getSamples(eventId: Int): List<AnalyzedSample> = jdbcTemplate.query(analysisSql, analyzedSampleRowMapper, eventId)
+
+    val analysisSql = """SELECT as_of_date,
                             COUNT(*),
                             AVG(current_price_amount),
                             MIN(current_price_amount),
@@ -48,26 +47,9 @@ class ListingRepository(private val jdbcTemplate: JdbcTemplate, private val sqlC
                             STDDEV(current_price_amount)
                         FROM ${sqlConfig.schema}.stubhubListing
                         WHERE sectionname like '%Lower%' or sectionname like '%Floor'
-                        AND event_id = $eventId
+                        AND event_id = ?
                         GROUP by as_of_date;
                     """
-            ).map {
-                val time = it.get("as_of_date") as Timestamp
-                val count = it.get("count") as Long
-                val average = it.get("avg") as Double
-                val maximum = it.get("max") as Double
-                val minimum = it.get("min") as Double
-                val standardDeviation = it.get("stddev") as Double
-
-                AnalyzedSample(
-                        asOfDate = time.toLocalDateTime(),
-                        count = count.toInt(),
-                        average = BigDecimal(average),
-                        maximum = BigDecimal(maximum),
-                        minimum = BigDecimal(minimum),
-                        standardDeviation = BigDecimal(standardDeviation)
-                )
-            }
 
 
     val insertSql = """INSERT INTO ${sqlConfig.schema}.stubhubListing(
