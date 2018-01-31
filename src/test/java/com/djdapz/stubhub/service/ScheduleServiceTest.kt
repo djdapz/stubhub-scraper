@@ -23,7 +23,7 @@ class ScheduleServiceTest {
     @Test
     internal fun `should call get events based on database values`() {
         subject.getListingsForHardcodedList()
-        verify(listingService).getListingFor(firstEvent.eventId)
-        verify(listingService).getListingFor(secondEvent.eventId)
+        verify(listingService).getListings(firstEvent.eventId)
+        verify(listingService).getListings(secondEvent.eventId)
     }
 }

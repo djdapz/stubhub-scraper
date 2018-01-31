@@ -7,5 +7,4 @@ import org.springframework.stereotype.Service
 @Service
 class EventService(val eventRepository: EventRepository) {
     fun getEvents(): List<StubhubEvent> = eventRepository.getEvents()
-
 }

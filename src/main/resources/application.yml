@@ -7,7 +7,8 @@ flyway:
 
 stubhub:
   url: https://api.stubhub.com
-  path:
-    listing: /search/inventory/v2
+  listing:
+    path: /search/inventory/v2
+    page-size: 200
   api:
     token: 6f8f4c0a-090c-32dc-a74b-3fad7b41692a

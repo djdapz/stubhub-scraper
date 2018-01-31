@@ -1,9 +1,6 @@
 package com.djdapz.stubhub.util
 
-import com.djdapz.stubhub.domain.AnalyzedSample
-import com.djdapz.stubhub.domain.Price
-import com.djdapz.stubhub.domain.ProcessedListing
-import com.djdapz.stubhub.domain.StubhubListing
+import com.djdapz.stubhub.domain.*
 import java.lang.Math.abs
 import java.math.BigDecimal
 import java.net.URL
@@ -12,7 +9,6 @@ import java.time.LocalDateTime
 
 val CHARACTERS = "abcdefghijklmnopqrstuvwxyl1234567890-------"
 val URL_SAFE_CHARACTERS = "abcdefghijklmnopqrstuvwxyz"
-
 
 
 fun randomInt(bound: Int = 100000): Int = abs(java.util.Random().nextInt() % bound)
@@ -24,7 +20,7 @@ private fun randomUrlSafeString(bound: Int?): String = randomString(bound!!, URL
 private fun randomString(length: Int = 50, characters: String = CHARACTERS): String =
         (1..length)
                 .map { characters[randomInt(characters.length - 1)] }
-                .joinToString( separator = "")
+                .joinToString(separator = "")
 
 fun randomUrl(): URL = URL(
         "http://" + randomUrlSafeString(3)
@@ -63,6 +59,7 @@ fun randomAnalyzedSample() =
                 average = randomBigDecimal(),
                 minimum = randomBigDecimal(),
                 maximum = randomBigDecimal(),
+                median = randomBigDecimal(),
                 standardDeviation = randomBigDecimal())
 
 
@@ -86,10 +83,14 @@ fun randomBoolean(): Boolean = randomInt() % 2 == 1
 
 fun <T> randomList(producer: () -> T): List<T> = (1..5).map { producer() }
 
-private fun randomPrice(): Price = Price(randomBigDecimal(), randomString())
+inline fun <T> randomList(size: Int, producer: () -> T): List<T> = (1..size).map { producer() }
 
-private fun randomBigDecimal() = BigDecimal(
+fun randomPrice(): Price = Price(randomBigDecimal(), randomString())
+
+fun randomBigDecimal() = BigDecimal(
         randomInt(100000).toString()
                 + "."
                 + randomInt(100000).toString())
+
+fun randomAnalysisType(): AnalysisType = AnalysisType.values()[randomInt(AnalysisType.values().size)]
 

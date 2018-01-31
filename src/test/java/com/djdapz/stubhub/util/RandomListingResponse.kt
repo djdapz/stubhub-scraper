@@ -1,9 +1,9 @@
 package com.djdapz.stubhub.util
 
-import com.djdapz.stubhub.domain.StubhubListingResponse
 import com.djdapz.stubhub.domain.StubhubListing
+import com.djdapz.stubhub.domain.StubhubListingResponse
 
-fun randomListingResponse(
+fun randomStubhubListingResponse(
         eventId: Int = randomInt(),
         totalListings: Int = randomInt(),
         totalTickets: Int = randomInt(),
@@ -11,8 +11,7 @@ fun randomListingResponse(
         maxQuantity: Int = randomInt(),
         stubhubListing: List<StubhubListing> = randomList(::randomStubhubListing),
         listingAttributeCategorySummary: List<Int> = randomList({randomInt()}),
-        start: Int = randomInt(),
-        rows: Int = randomInt()
+        start: Int = randomInt()
 ): StubhubListingResponse =
         StubhubListingResponse(
                 eventId,
@@ -23,5 +22,5 @@ fun randomListingResponse(
                 stubhubListing,
                 listingAttributeCategorySummary,
                 start,
-                rows
+                stubhubListing.size
         )

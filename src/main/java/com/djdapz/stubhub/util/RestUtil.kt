@@ -17,6 +17,7 @@ object RestUtil {
         val headers = LinkedMultiValueMap<String, String>()
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE)
 
+        println("Calling HTTP-${HttpMethod.GET} from $url")
         return restTemplate.exchange(
                 url,
                 HttpMethod.GET,

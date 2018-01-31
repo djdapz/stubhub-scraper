@@ -20,24 +20,31 @@ class ListingControllerTest {
     private val expectedListings = asList(randomProcessedListing(), randomProcessedListing())
 
     private val listingService = mock<ListingService> {
-        on { getListingFor(any()) } doReturn expectedListings
+        on { getListings(any()) } doReturn expectedListings
     }
     private val subject = ListingController(listingService)
     private val mockMvc = MockMvcBuilders.standaloneSetup(subject).build()
 
     @Test
-    @Throws(Exception::class)
-    fun shouldDelegateToListingService() {
+    fun shouldDefaultToUsingAggregate() {
         mockMvc.perform(
                 get("/listings")
                         .param("eventId", eventId.toString())
         )
 
-        verify(listingService).getListingFor(eventId)
+        verify(listingService).getListings(eventId)
     }
 
     @Test
-    @Throws(Exception::class)
+    fun shouldUseAggregateWhenPassed() {
+        mockMvc.perform(
+                get("/listings/analyze")
+                        .param("eventId", eventId.toString()))
+
+        verify(listingService).analyzeListings(eventId)
+    }
+
+    @Test
     fun shouldReturnListOfListings() {
         val listingsJson = mockMvc.perform(
                 get("/listings")

@@ -18,6 +18,6 @@ class EventRepository(
                     stubhubEventRowMapper
             )
 
-    private val analysisSql = "SELECT *  FROM ${sqlConfig.schema}.event"
+    private val analysisSql = "SELECT *  FROM ${sqlConfig.schema}.stubhub_event"
 
 }

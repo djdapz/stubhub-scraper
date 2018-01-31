@@ -12,6 +12,5 @@ class ScheduleService(
     @Scheduled(cron = "0 0 0 * * *")
     fun getListingsForHardcodedList() = eventService
             .getEvents()
-            .map { it.eventId }
-            .forEach { listingService.getListingFor(it) }
+            .forEach { listingService.getListings(it.eventId) }
 }

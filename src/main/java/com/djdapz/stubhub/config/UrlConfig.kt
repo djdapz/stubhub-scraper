@@ -4,4 +4,5 @@ import java.net.URL
 
 interface UrlConfig {
     val stubhubListingUrl: URL
+    val pageSize: Int
 }

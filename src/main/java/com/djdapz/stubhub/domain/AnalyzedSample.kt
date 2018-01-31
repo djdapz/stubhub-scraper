@@ -9,6 +9,7 @@ data class AnalyzedSample(
         val average: BigDecimal,
         val minimum: BigDecimal,
         val maximum: BigDecimal,
+        val median: BigDecimal,
         val standardDeviation: BigDecimal
 )
 

@@ -13,6 +13,7 @@ class AnalyzedSampleRowMapper : RowMapper<AnalyzedSample> {
             average = rs.getDouble("avg").toBigDecimal(),
             maximum = rs.getDouble("max").toBigDecimal(),
             minimum = rs.getDouble("min").toBigDecimal(),
-            standardDeviation = rs.getDouble("stddev").toBigDecimal()
+            standardDeviation = rs.getDouble("stddev").toBigDecimal(),
+            median = rs.getDouble("avg").toBigDecimal()
     )
 }

@@ -45,7 +45,7 @@ class EventRepositoryTest {
         assertThat(events).containsExactly(firstEvent, secondEvent)
     }
 
-    private val analysisSql = "SELECT *  FROM $schema.event"
+    private val analysisSql = "SELECT *  FROM $schema.stubhub_event"
 
 }
 
