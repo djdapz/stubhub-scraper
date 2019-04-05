@@ -5,15 +5,12 @@ import com.djdapz.stubhub.config.UrlConfig
 import com.djdapz.stubhub.domain.AnalyzedSample
 import com.djdapz.stubhub.domain.ProcessedListing
 import com.djdapz.stubhub.domain.StubhubListingResponse
+import com.djdapz.stubhub.repository.AnalysisRepository
 import com.djdapz.stubhub.repository.ListingRepository
 import com.djdapz.stubhub.util.RestUtil.getJsonObject
-import org.nield.kotlinstatistics.average
-import org.nield.kotlinstatistics.median
-import org.nield.kotlinstatistics.standardDeviation
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
-import java.time.LocalDateTime
 
 @Service
 class ListingServiceImpl(
@@ -21,7 +18,9 @@ class ListingServiceImpl(
         private val urlConfig: UrlConfig,
         private val listingRepository: ListingRepository,
         private val timeService: TimeService,
-        val stubhubClient: StubhubClient
+        private val analysisService: AnalysisService,
+        private val analysisRepository: AnalysisRepository,
+        private val stubhubClient: StubhubClient
 ) : ListingService {
 
     override fun getListings(eventId: Int): List<ProcessedListing> {
@@ -41,17 +40,7 @@ class ListingServiceImpl(
                 .toUriString()
     }
 
-    override fun analyzeListings(eventId: Int): AnalyzedSample {
-        val allEvents = stubhubClient.getAllEvents(eventId).map { it.listingPrice.amount }
-
-        return AnalyzedSample(
-                asOfDate = LocalDateTime.now(),
-                count = allEvents.size,
-                average = allEvents.average(),
-                minimum = allEvents.min()!!,
-                maximum = allEvents.max()!!,
-                standardDeviation = allEvents.standardDeviation().toBigDecimal(),
-                median = allEvents.median().toBigDecimal()
-        )
-    }
+    override fun analyzeListings(eventId: Int): AnalyzedSample =
+            analysisService.analyzeListings(stubhubClient.getAllEvents(eventId))
+                    .also { analysisRepository.save(it, eventId) }
 }

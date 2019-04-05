@@ -4,6 +4,7 @@ import com.djdapz.stubhub.client.StubhubClientImpl
 import com.djdapz.stubhub.config.UrlConfig
 import com.djdapz.stubhub.domain.ProcessedListing
 import com.djdapz.stubhub.domain.StubhubListingResponse
+import com.djdapz.stubhub.repository.AnalysisRepository
 import com.djdapz.stubhub.repository.ListingRepository
 import com.djdapz.stubhub.util.*
 import com.djdapz.stubhub.util.TestingUtil.verifyJsonGetObject
@@ -13,13 +14,10 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.nield.kotlinstatistics.median
-import org.nield.kotlinstatistics.standardDeviation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
-import java.math.BigDecimal
 import java.util.Arrays.asList
 
 class StubhubListingServiceImplTest {
@@ -38,34 +36,47 @@ class StubhubListingServiceImplTest {
     private val firstProcessedListing = ProcessedListing(this.firstStubhubListing, asOfDate, listingResponse.eventId)
     private val secondProcessedListing = ProcessedListing(this.secondStubhubListing, asOfDate, listingResponse.eventId)
 
+    private val analyzedSample = randomAnalyzedSample()
 
-    var restTemplate = mock<RestTemplate> {
+    private val restTemplate = mock<RestTemplate> {
         on { exchange(any<String>(), any(), any(), any<Class<*>>()) } doReturn response
     }
 
-    var urlConfig = mock<UrlConfig> {
+    private val urlConfig = mock<UrlConfig> {
         on { stubhubListingUrl } doReturn stubhubUrl
     }
 
-    var timeService = mock<TimeService> {
+    private val timeService = mock<TimeService> {
         on { now() } doReturn asOfDate
     }
 
-    var stubhubClient = mock<StubhubClientImpl> {
+    private val stubhubClient = mock<StubhubClientImpl> {
         on { getAllEvents(any()) } doReturn asList(firstStubhubListing, secondStubhubListing)
     }
 
-    var listingRepository = mock<ListingRepository> {}
+    private val analysisService = mock<AnalysisService> {
+        on { analyzeListings(any()) } doReturn analyzedSample
+    }
+
+    private val listingRepository = mock<ListingRepository> {}
+    private val analysisRepository = mock<AnalysisRepository> {}
 
 
-    private val subject = ListingServiceImpl(restTemplate, urlConfig, listingRepository, timeService, stubhubClient)
+    private val subject = ListingServiceImpl(
+            restTemplate =restTemplate,
+            urlConfig =urlConfig,
+            listingRepository =listingRepository,
+            timeService =timeService,
+            analysisService =analysisService,
+            analysisRepository =analysisRepository,
+            stubhubClient =stubhubClient
+    )
 
     private val url: String
         get() = UriComponentsBuilder
                 .fromHttpUrl(stubhubUrl.toExternalForm())
                 .queryParam("eventid", eventId)
                 .toUriString()
-
 
     @Test
     fun shouldCallRestTemplate() {
@@ -76,7 +87,6 @@ class StubhubListingServiceImplTest {
                 StubhubListingResponse::class.java
         )
     }
-
 
     @Test
     fun shouldCallUrlConfig() {
@@ -106,63 +116,24 @@ class StubhubListingServiceImplTest {
     }
 
     @Test
-    internal fun `should get average of listing prices from stubhub when analyzing an event`() {
-        val actual = subject.analyzeListings(eventId)
+    fun `should analyze results`() {
+        subject.analyzeListings(eventId)
 
-        val average = (firstProcessedListing.listingPrice.amount + secondProcessedListing.listingPrice.amount)
-                .div(BigDecimal(2))
-
-        assertThat(actual.average).isEqualTo(average)
+        verify(analysisService).analyzeListings(asList(firstStubhubListing, secondStubhubListing))
     }
 
     @Test
-    internal fun `should get maximum of listing prices from stubhub when analyzing an event`() {
-        val actual = subject.analyzeListings(eventId)
+    fun `should save analyzed results in repository`() {
+        subject.analyzeListings(eventId)
 
-        val max = asList(firstProcessedListing.listingPrice.amount, secondProcessedListing.listingPrice.amount)
-                .max()
-
-        assertThat(actual.maximum).isEqualTo(max)
-    }
-
-    @Test
-    internal fun `should get minimum of listing prices from stubhub when analyzing an event`() {
-        val actual = subject.analyzeListings(eventId)
-
-        val min = asList(firstProcessedListing.listingPrice.amount, secondProcessedListing.listingPrice.amount)
-                .min()
-
-        assertThat(actual.minimum).isEqualTo(min)
-    }
-
-    @Test
-    internal fun `should get standard deviation of listing prices from stubhub when analyzing an event`() {
-        val actual = subject.analyzeListings(eventId)
-
-        val standardDeviation = asList(firstProcessedListing.listingPrice.amount, secondProcessedListing.listingPrice.amount)
-                .standardDeviation().toBigDecimal()
-
-        assertThat(actual.standardDeviation).isEqualTo(standardDeviation)
-    }
-
-    @Test
-    internal fun `should get number  of listing prices from stubhub when analyzing an event`() {
-        val actual = subject.analyzeListings(eventId)
-
-        val count = asList(firstProcessedListing.listingPrice.amount, secondProcessedListing.listingPrice.amount)
-                .size
-
-        assertThat(actual.count).isEqualTo(count)
+        verify(analysisRepository).save(analyzedSample, eventId)
     }
 
 
     @Test
-    internal fun `should get median of listing prices from stubhub when analyzing an event`() {
+    fun `should save return analyzed sample`() {
         val actual = subject.analyzeListings(eventId)
 
-        val median = asList(firstProcessedListing.listingPrice.amount, secondProcessedListing.listingPrice.amount)
-                .median().toBigDecimal()
-
-        assertThat(actual.median).isEqualTo(median)
+        assertThat(actual).isEqualTo(analyzedSample)
     }
 }
